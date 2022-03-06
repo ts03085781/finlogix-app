@@ -1,25 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import store from "./redux/store";
+import axios from "axios";
+
+import Header from "./components/Header";
+import Description from "./components/Description";
+import ListsBlock from "./components/ListsBlock";
+import Introduction from "./components/Introduction";
+import RegisterForm from "./components/RegisterForm";
+
+import LoginForm from "./components/LoginForm";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    const state = store.getState();
+
+    useEffect(() => {
+        const checkUserByToken = async () => {
+            try {
+                const userState = await axios({
+                    method: "POST",
+                    url: `${URL}/auth/me`,
+                    // withCredentials: true, //axios默認不帶cookie, 此參數為是否攜帶cookie
+                });
+                store.dispatch({
+                    type: "SET_WEBINAR_LIST",
+                    data: userState.data,
+                });
+            } catch (error) {
+                console.log("App :", error);
+            }
+        };
+        checkUserByToken();
+    }, []);
+
+    return (
+        <div className="App">
+            {state.showLoginForm && <LoginForm />}
+            <Header />
+            <Description />
+            <ListsBlock />
+            <Introduction />
+            <RegisterForm />
+        </div>
+    );
 }
 
 export default App;
