@@ -13,25 +13,6 @@ import LoginForm from "./components/LoginForm";
 function App() {
     const state = store.getState();
 
-    useEffect(() => {
-        const checkUserByToken = async () => {
-            try {
-                const userState = await axios({
-                    method: "POST",
-                    url: `${URL}/auth/me`,
-                    // withCredentials: true, //axios默認不帶cookie, 此參數為是否攜帶cookie
-                });
-                store.dispatch({
-                    type: "SET_WEBINAR_LIST",
-                    data: userState.data,
-                });
-            } catch (error) {
-                console.log("App :", error);
-            }
-        };
-        checkUserByToken();
-    }, []);
-
     return (
         <div className="App">
             {state.showLoginForm && <LoginForm />}

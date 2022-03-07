@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect } from "react";
 import store from "../../redux/store";
 import axios from "axios";
 import { setCookie, getCookie } from "../../utils/cookieMath";
@@ -40,6 +40,28 @@ function Header() {
             })
             .catch((error) => console.error("Error:", error));
     };
+
+    useEffect(() => {
+        if (!getCookie("token")) return;
+
+        //使用token去認用戶狀態
+        fetch(`${URL}/auth/me`, {
+            method: "POST",
+            Authorization: `Bearer ${getCookie("token")}`,
+        })
+            .then((response) => response.json())
+            .then((userIinfo) => {
+                store.dispatch({
+                    typr: "SET_USER_INFOT",
+                    data: userIinfo.user,
+                });
+                store.dispatch({ typr: "LOGIN_STAGE", data: true });
+                setCookie("token", userIinfo.token, 3600 * 24);
+            })
+            .catch((error) => {
+                console.log("LoginForm :", error);
+            });
+    }, []);
 
     return (
         <HeaderBlock>
