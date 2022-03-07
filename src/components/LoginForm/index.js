@@ -30,8 +30,8 @@ function LoginForm() {
         };
 
         fetch(url, {
-            body: JSON.stringify(data), // must match 'Content-Type' header
-            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            body: JSON.stringify(data),
+            method: "POST",
         })
             .then((response) => response.json())
             .then((userIinfo) => {
