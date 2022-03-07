@@ -12,16 +12,13 @@ function ListsBlock() {
     const state = store.getState();
 
     //獲取列表資料
-    const getWebinarList = useCallback(async () => {
-        try {
-            return await fetch(`${URL}/posts?per_page=${per_page}&page=${page}`)
-                .then((response) => response.json())
-                .then((myJson) => {
-                    store.dispatch({ type: "SET_WEBINAR_LIST", data: myJson });
-                });
-        } catch (error) {
-            console.log("ListsBlock : " + error);
-        }
+    const getWebinarList = useCallback(() => {
+        fetch(`${URL}/posts?per_page=${per_page}&page=${page}`)
+            .then((response) => response.json())
+            .then((myJson) => {
+                store.dispatch({ type: "SET_WEBINAR_LIST", data: myJson });
+            })
+            .catch((error) => console.error("Error:", error));
     }, [page]);
 
     const clickRegister = () => {
@@ -39,10 +36,21 @@ function ListsBlock() {
     return (
         <SectionBlock backgroundColor="#F2F2F2">
             <Block>
+                {state.webinarList.map((ele) => (
+                    <List
+                        key={ele.id}
+                        creatAt={ele.created_at}
+                        title={ele.title}
+                        contet={ele.contet}
+                        clickRegister={clickRegister}
+                    />
+                ))}
+                {/* //API無法使用 固使用假資料 */}
                 <List
-                    creatAt={"31/10/2019"}
-                    title={"NFP - Live Trading Webinar"}
-                    contet={"Live trading the US Jobs data release."}
+                    key={"testKey"}
+                    creatAt={"test created_at"}
+                    title={"test title"}
+                    contet={"test contet"}
                     clickRegister={clickRegister}
                 />
             </Block>

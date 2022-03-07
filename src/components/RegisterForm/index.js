@@ -8,8 +8,10 @@ import {
     SelectBlock,
 } from "./styles";
 import SectionBlock from "../SectionBlock";
+import store from "../../redux/store";
 
 function RegisterForm() {
+    const state = store.getState();
     return (
         <SectionBlock>
             <OutSideBox id="registerForm">
@@ -23,29 +25,25 @@ function RegisterForm() {
                     <SelectBlock>
                         <label htmlFor="topic">Topic</label>
                         <select id="topic">
-                            <option>請選擇你最愛的寵物</option>
-                            <option>Dog</option>
-                            <option>Cat</option>
-                            <option>Hamster</option>
-                            <option>Parrot</option>
-                            <option>Spider</option>
-                            <option>Goldfish</option>
+                            {state.webinarList.map((ele) => (
+                                <option>{ele.titel}</option>
+                            ))}
                         </select>
                     </SelectBlock>
 
                     <InputBlock>
                         <label htmlFor="firstName">First Name</label>
-                        <input id="firstName" type="text"></input>
+                        <input id="firstName" type="text" />
                     </InputBlock>
 
                     <InputBlock>
                         <label htmlFor="lastName">Last Name</label>
-                        <input id="lastName" type="text"></input>
+                        <input id="lastName" type="text" />
                     </InputBlock>
 
                     <InputBlock>
                         <label htmlFor="email">Email</label>
-                        <input id="email" type="email"></input>
+                        <input id="email" type="email" />
                     </InputBlock>
                     <RegisterBtn>Register</RegisterBtn>
                 </Form>

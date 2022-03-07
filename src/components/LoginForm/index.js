@@ -1,6 +1,7 @@
 import { useState, useEffect, Fragment } from "react";
 import store from "../../redux/store";
 import axios from "axios";
+import { setCookie } from "../../utils/cookieMath";
 
 import { URL } from "../../source.config";
 import { Cover, LoginBlock, LoginButton, CancelBtn, ErrorText } from "./styles";
@@ -21,22 +22,32 @@ function LoginForm() {
     const onSubmit = async () => {
         setLogining(true);
         setSubmitError(false);
-        try {
-            const userIinfo = await axios({
-                method: "POST",
-                url: `${URL}/auth/email/login`,
-                // withCredentials: true, //axios默認不帶cookie, 此參數為是否攜帶cookie
-                data: {
-                    email,
-                    password,
-                },
-            });
-            store.dispatch({ typr: "SET_USER_INFOT", data: userIinfo.data });
-            store.dispatch({ typr: "LOGIN_STAGE", data: true });
-        } catch (error) {
-            console.log("LoginForm :", error);
-            setSubmitError(true);
-        }
+
+        const url = `${URL}/auth/email/login`;
+        const data = {
+            email,
+            password,
+        };
+
+        fetch(url, {
+            body: JSON.stringify(data), // must match 'Content-Type' header
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+        })
+            .then((response) => response.json())
+            .then((userIinfo) => {
+                store.dispatch({
+                    typr: "SET_USER_INFOT",
+                    data: userIinfo.user,
+                });
+                store.dispatch({ typr: "LOGIN_STAGE", data: true });
+                setCookie("token", userIinfo.token, 3600 * 24);
+                setSubmitError(false);
+            })
+            .catch((error) => {
+                console.log("LoginForm :", error);
+                setSubmitError(true);
+            }); // 輸出成 json
+
         setLogining(false);
     };
 

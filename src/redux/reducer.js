@@ -3,6 +3,7 @@ const initState = {
     login: false,
     webinarList: [],
     showLoginForm: false,
+    userInfo: {},
 };
 
 export default function Reducer(preState = initState, action) {
@@ -16,7 +17,7 @@ export default function Reducer(preState = initState, action) {
         case "SET_WEBINAR_LIST":
             return { ...preState, webinarList: data };
         case "SET_USER_INFOT":
-            return { ...preState, webinarList: data };
+            return { ...preState, userInfo: data };
         default:
             return preState;
     }

@@ -1,6 +1,7 @@
 import React from "react";
 import store from "../../redux/store";
 import axios from "axios";
+import { setCookie, getCookie } from "../../utils/cookieMath";
 
 import {
     LoginBtn,
@@ -21,17 +22,23 @@ function Header() {
 
     //點擊登出
     const clickLogout = async () => {
-        try {
-            const userIinfo = await axios({
-                method: "POST",
-                url: `${URL}/auth/logout`,
-                // withCredentials: true, //axios默認不帶cookie, 此參數為是否攜帶cookie
-            });
-            store.dispatch({ typr: "SET_USER_INFOT", data: userIinfo.data });
-            store.dispatch({ typr: "LOGIN_STAGE", data: false });
-        } catch (error) {
-            console.log("Header :", error);
-        }
+        fetch(`${URL}/auth/logout`, {
+            method: "POST",
+            headers: {
+                "content-type": "application/json",
+                Authorization: `Bearer ${getCookie("token")}`,
+            },
+        })
+            .then((response) => response.json())
+            .them((userIinfo) => {
+                store.dispatch({
+                    typr: "SET_USER_INFOT",
+                    data: userIinfo.data,
+                });
+                store.dispatch({ typr: "LOGIN_STAGE", data: false });
+                setCookie(`token`, "", 0);
+            })
+            .catch((error) => console.error("Error:", error));
     };
 
     return (
